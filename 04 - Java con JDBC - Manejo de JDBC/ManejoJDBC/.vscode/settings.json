@@ -1,6 +1,9 @@
 {
   "java.project.sourcePaths": ["src"],
   "java.project.outputPath": "bin",
-  "java.project.referencedLibraries": ["lib/**/*.jar"],
-  "cSpell.words": ["Conexion", "JDBC"]
+  "java.project.referencedLibraries": [
+    "lib/**/*.jar",
+    "d:\\JavaClasesNivel3\\drivers-jdbc\\mariadb-java-client-3.3.3.jar"
+  ],
+  "cSpell.words": ["Conexion", "jdbc", "JDBC", "mariadb", "pstmt", "sqle"]
 }

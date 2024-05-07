@@ -1,20 +1,18 @@
 package domain;
 
-/**
- * @author Nono
- */
 public class Persona {
-
-    private int id_persona;
+    // Atributos
+    private int id;
     private String nombre;
     private String apellido;
 
-    public int getId_persona() {
-        return id_persona;
+    // Métodos
+    public int getId() {
+        return id;
     }
 
-    public void setId_persona(int idPersona) {
-        id_persona = idPersona;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNombre() {
@@ -35,6 +33,6 @@ public class Persona {
 
     @Override
     public String toString() {
-        return "Persona [id_persona=" + id_persona + ", nombre=" + nombre + ", apellido=" + apellido + "]";
+        return "Persona [id=" + id + ", nombre=" + nombre + ", apellido=" + apellido + "]";
     }
 }

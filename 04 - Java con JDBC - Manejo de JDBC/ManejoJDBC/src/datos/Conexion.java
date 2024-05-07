@@ -13,33 +13,36 @@ import java.sql.SQLException;
 public class Conexion {
 
     // Valores de conexión a MySql
-
-    private static String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    // El puerto es opcional
-    private static String JDBC_URL = "jdbc:mysql://localhost/sga?useSSL=false";
+    private static String JDBC_DRIVER = "org.mariadb.jdbc.Driver";
+    // El puerto es opcional (omisión SSL da un warning)
+    private static String JDBC_URL = "jdbc:mariadb://localhost:3306/sga-nono?useSSL=false";
     private static String JDBC_USER = "root";
     private static String JDBC_PASS = "";
     private static Driver driver = null;
 
     // Para que no haya problemas al obtener la conexión de
     // manera concurrente, se usa la palabra synchronized
-    public static synchronized Connection getConnection()
-            throws SQLException {
+    public static synchronized Connection getConnection() throws SQLException {
         if (driver == null) {
             try {
                 // Se registra el driver
                 Class jdbcDriverClass = Class.forName(JDBC_DRIVER);
                 driver = (Driver) jdbcDriverClass.newInstance();
                 DriverManager.registerDriver(driver);
+
+                // Driver d = new org.mariadb.jdbc.Driver.Driver();
+                // DriverManager.registerDriver(d);
+                // System.out.println("Driver successfully registered !");
+
             } catch (Exception e) {
-                System.out.println("Fallo en cargar el driver JDBC");
+                System.out.println("Falló al cargar el driver JDBC");
                 e.printStackTrace();
             }
         }
         return DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASS);
     }
 
-    // Cierre del resultSet
+    // Cerrar ResultSet
     public static void close(ResultSet rs) {
         try {
             if (rs != null) {
@@ -50,18 +53,18 @@ public class Conexion {
         }
     }
 
-    // Cierre del PrepareStatement
-    public static void close(PreparedStatement stmt) {
+    // Cerrar PreparedStatement
+    public static void close(PreparedStatement pstmt) {
         try {
-            if (stmt != null) {
-                stmt.close();
+            if (pstmt != null) {
+                pstmt.close();
             }
         } catch (SQLException sqle) {
             sqle.printStackTrace();
         }
     }
 
-    // Cierre de la conexion
+    // Cerrar Connection
     public static void close(Connection conn) {
         try {
             if (conn != null) {

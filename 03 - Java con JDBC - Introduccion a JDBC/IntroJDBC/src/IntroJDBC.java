@@ -5,7 +5,7 @@ public class IntroJDBC {
         // Cadena de conexión de MySql/MariaDB, el parámetro useSSL es opcional
         // String url = "jdbc:mysql://localhost:3306/sga?useSSL=false";
         // String url = "jdbc:mariadb://localhost:3306/sga-nono?user=root&password=";
-        String url = "jdbc:mariadb://localhost:3306/sga-nono";
+        String url = "jdbc:mariadb://localhost:3306/sga-nono?useSSL=false";
 
         try {
             // Cargar driver mysql/mariadb
@@ -19,7 +19,7 @@ public class IntroJDBC {
             Statement sentencia = connection.createStatement();
 
             // Crear query
-            String sql = "select id_persona, nombre, apellido from persona";
+            String sql = "SELECT id_persona, nombre, apellido FROM persona";
             ResultSet resultado = sentencia.executeQuery(sql);
             while (resultado.next()) {
                 System.out.println("");
