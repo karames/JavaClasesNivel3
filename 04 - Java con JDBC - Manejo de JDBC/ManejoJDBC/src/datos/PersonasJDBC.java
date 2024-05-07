@@ -5,23 +5,23 @@ import java.sql.*;
 import java.util.*;
 
 /**
- * [PersonasJDBC description]
+ * CRUD consultas con JDBC
  *
  * @author Nono
  */
 public class PersonasJDBC {
-    // Nos apoyamos de la llave primaria auto incrementable de MySql
-    // por lo que se omite el campo id_persona
-    // Se utiliza un PreparedStatement, por lo que podemos
-    // utilizar parámetros (signos de ?),
-    // los cuales posteriormente será sustituidos por su respectivo parámetro
+    // Omitir 'id_persona' por ser PK von valor autoincrementable
+    // 'PreparedStatement' permite utilizar parámetros (?),
+    // los cuales posteriormente serán sustituidos por sus respectivos valores
     private final String SQL_SELECT = "SELECT id_persona, nombre, apellido FROM persona ORDER BY id_persona";
-    private final String SQL_INSERT = "INSERT INTO persona(nombre, apellido) VALUES(?,?)";
-    private final String SQL_UPDATE = "UPDATE persona SET nombre=?, apellido=? WHERE id_persona=?";
+    private final String SQL_INSERT = "INSERT INTO persona(nombre, apellido) VALUES(?, ?)";
+    private final String SQL_UPDATE = "UPDATE persona SET nombre = ?, apellido = ? WHERE id_persona = ?";
     private final String SQL_DELETE = "DELETE FROM persona WHERE id_persona = ?";
 
     /**
      * Método que regresa el contenido de la tabla personas (SELECT)
+     *
+     * @return List<Persona> Almacena resultado SELECT
      */
     public List<Persona> select() {
         Connection conn = null;
@@ -30,7 +30,8 @@ public class PersonasJDBC {
         Persona persona = null;
         List<Persona> personasLista = new ArrayList<Persona>();
         try {
-            conn = Conexion.getConnection();
+            conn = Conexion.conectarBD();
+            System.out.println("Ejecutando query: " + SQL_SELECT);
             pstmt = conn.prepareStatement(SQL_SELECT);
             rs = pstmt.executeQuery();
             while (rs.next()) {
@@ -44,7 +45,8 @@ public class PersonasJDBC {
                 personasLista.add(persona);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
         } finally {
             Conexion.close(rs);
             Conexion.close(pstmt);
@@ -63,20 +65,19 @@ public class PersonasJDBC {
     public int insert(String nombre, String apellido) {
         Connection conn = null;
         PreparedStatement pstmt = null;
-        // ResultSet rs = null; // no se utiliza en este ejercicio
         int rows = 0; // registros afectados
         try {
-            conn = Conexion.getConnection();
+            conn = Conexion.conectarBD();
+            System.out.println("Ejecutando query: " + SQL_INSERT);
             pstmt = conn.prepareStatement(SQL_INSERT);
             int index = 1; // contador de parámetros (columnas)
             pstmt.setString(index++, nombre); // parámetro 1 => ?
             pstmt.setString(index, apellido); // parámetro 2 => ?
-            System.out.println("");
-            System.out.println("Ejecutando query: " + SQL_INSERT);
             rows = pstmt.executeUpdate(); // número de registros afectados
             System.out.println("Registros insertados: " + rows);
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
         } finally {
             Conexion.close(pstmt);
             Conexion.close(conn);
@@ -97,18 +98,18 @@ public class PersonasJDBC {
         PreparedStatement pstmt = null;
         int rows = 0;
         try {
-            conn = Conexion.getConnection();
+            conn = Conexion.conectarBD();
+            System.out.println("Ejecutando query: " + SQL_UPDATE);
             pstmt = conn.prepareStatement(SQL_UPDATE);
             int index = 1;
             pstmt.setString(index++, nombre); // parámetro 1 => ?
             pstmt.setString(index++, apellido); // parámetro 2 => ?
             pstmt.setInt(index, id); // parámetro 3 => ?
-            System.out.println("");
-            System.out.println("Ejecutando query: " + SQL_UPDATE);
             rows = pstmt.executeUpdate();
             System.out.println("Registros actualizados: " + rows);
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
         } finally {
             Conexion.close(pstmt);
             Conexion.close(conn);
@@ -127,15 +128,15 @@ public class PersonasJDBC {
         PreparedStatement pstmt = null;
         int rows = 0;
         try {
-            conn = Conexion.getConnection();
+            conn = Conexion.conectarBD();
+            System.out.println("Ejecutando query: " + SQL_DELETE);
             pstmt = conn.prepareStatement(SQL_DELETE);
             pstmt.setInt(1, id);
-            System.out.println("");
-            System.out.println("Ejecutando query: " + SQL_DELETE);
             rows = pstmt.executeUpdate();
             System.out.println("Registros eliminados: " + rows);
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
         } finally {
             Conexion.close(pstmt);
             Conexion.close(conn);

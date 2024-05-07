@@ -7,22 +7,21 @@ public class ManejoPersonas {
         PersonasJDBC personasJDBC = new PersonasJDBC();
 
         // Prueba del método SELECT
-        // Uso de un objeto persona para encapsular la información
-        // de un registro de base de datos
-        System.out.println("");
+        // Uso objeto persona para encapsular la información del registro de la BD
         List<Persona> personasLista = personasJDBC.select();
         for (Persona persona : personasLista) {
             System.out.print(persona);
             System.out.println("");
         }
+        System.out.println("Registros seleccionados: " + personasLista.size());
 
-        // Prueba del método insert
+        // Prueba del método INSERT
         // personasJDBC.insert("Pedro", "Sánchez");
 
-        // Prueba del método update
-        // personasJDBC.update(8, "Nombre3", "Apellido3");
+        // Prueba del método UPDATE
+        // personasJDBC.update(X, "Nombre3", "Apellido3");
 
-        // Prueba del método delete
-        // personasJDBC.delete(8);
+        // Prueba del método DELETE
+        // personasJDBC.delete(X);
     }
 }

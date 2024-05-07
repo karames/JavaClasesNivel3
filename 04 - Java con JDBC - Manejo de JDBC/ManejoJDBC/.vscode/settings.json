@@ -5,5 +5,13 @@
     "lib/**/*.jar",
     "d:\\JavaClasesNivel3\\drivers-jdbc\\mariadb-java-client-3.3.3.jar"
   ],
-  "cSpell.words": ["Conexion", "jdbc", "JDBC", "mariadb", "pstmt", "sqle"]
+  "cSpell.words": [
+    "autoincrementable",
+    "Conexion",
+    "jdbc",
+    "JDBC",
+    "mariadb",
+    "pstmt",
+    "sqle"
+  ]
 }

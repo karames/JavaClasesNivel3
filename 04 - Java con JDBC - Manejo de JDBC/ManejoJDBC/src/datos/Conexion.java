@@ -1,7 +1,6 @@
 package datos;
 
 import java.sql.Connection;
-import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,30 +10,28 @@ import java.sql.SQLException;
  * Clase Conexión JDBC
  */
 public class Conexion {
-
-    // Valores de conexión a MySql
-    // private static String JDBC_DRIVER = "org.mariadb.jdbc.Driver";
+    // Valores de conexión a MariaDB
     // El puerto es opcional (omisión SSL da un warning)
-    private static String JDBC_URL = "jdbc:mariadb://localhost:3306/sga-nono?useSSL=false";
-    private static String JDBC_USER = "root";
-    private static String JDBC_PASS = "";
-    private static Driver driver = null;
+    // "jdbc:mariadb://localhost:3306/sga-nono?useSSL=false";
+    private static String HOST = "jdbc:mariadb://localhost:3306/";
+    private static String BD = "sga-nono";
+    private static String USER = "root";
+    private static String PASSWORD = "";
 
-    // Para que no haya problemas al obtener la conexión de
-    // manera concurrente, se usa la palabra synchronized
-    public static synchronized Connection getConnection() throws SQLException {
-        if (driver == null) {
-            try {
-                // Registrar driver
-                driver = new org.mariadb.jdbc.Driver();
-                DriverManager.registerDriver(driver);
-                System.out.println("Registrado el driver JDBC");
-            } catch (Exception e) {
-                System.out.println("Error al cargar el driver JDBC");
-                e.printStackTrace();
-            }
+    // Para evitar problemas de conexión de forma concurrente (synchronized)
+    public static synchronized Connection conectarBD() {
+        System.out.println("");
+        System.out.println("Conectando con la BD...");
+        Connection conn = null;
+        try {
+            conn = DriverManager.getConnection(HOST + BD, USER, PASSWORD);
+            System.out.println("OK - Se ha establecido conexión con la BD");
+        } catch (SQLException e) {
+            System.out.println("ERROR - No se pudo conectar con la BD");
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
         }
-        return DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASS);
+        return conn;
     }
 
     // Cerrar ResultSet
@@ -43,8 +40,9 @@ public class Conexion {
             if (rs != null) {
                 rs.close();
             }
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
@@ -54,8 +52,9 @@ public class Conexion {
             if (pstmt != null) {
                 pstmt.close();
             }
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
@@ -65,8 +64,9 @@ public class Conexion {
             if (conn != null) {
                 conn.close();
             }
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 }
