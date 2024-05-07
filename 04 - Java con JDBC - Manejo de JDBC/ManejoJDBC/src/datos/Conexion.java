@@ -13,7 +13,7 @@ import java.sql.SQLException;
 public class Conexion {
 
     // Valores de conexión a MySql
-    private static String JDBC_DRIVER = "org.mariadb.jdbc.Driver";
+    // private static String JDBC_DRIVER = "org.mariadb.jdbc.Driver";
     // El puerto es opcional (omisión SSL da un warning)
     private static String JDBC_URL = "jdbc:mariadb://localhost:3306/sga-nono?useSSL=false";
     private static String JDBC_USER = "root";
@@ -25,17 +25,12 @@ public class Conexion {
     public static synchronized Connection getConnection() throws SQLException {
         if (driver == null) {
             try {
-                // Se registra el driver
-                Class jdbcDriverClass = Class.forName(JDBC_DRIVER);
-                driver = (Driver) jdbcDriverClass.newInstance();
+                // Registrar driver
+                driver = new org.mariadb.jdbc.Driver();
                 DriverManager.registerDriver(driver);
-
-                // Driver d = new org.mariadb.jdbc.Driver.Driver();
-                // DriverManager.registerDriver(d);
-                // System.out.println("Driver successfully registered !");
-
+                System.out.println("Registrado el driver JDBC");
             } catch (Exception e) {
-                System.out.println("Falló al cargar el driver JDBC");
+                System.out.println("Error al cargar el driver JDBC");
                 e.printStackTrace();
             }
         }
