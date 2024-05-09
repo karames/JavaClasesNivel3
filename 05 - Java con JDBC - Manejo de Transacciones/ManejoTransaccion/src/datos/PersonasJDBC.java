@@ -10,6 +10,13 @@ import java.util.*;
  * @author Nono
  */
 public class PersonasJDBC {
+    // Variable que almacena una conexión como referencia
+    // se recibe en el constructor de esta clase
+    // y permite reutilizar la misma conexión para ejecutar
+    // varios queries de esta clase
+    // Se puede utilizar para el uso de una transacción en SQL
+    private Connection userConn;
+
     // Omitir 'id_persona' por ser PK von valor autoincrementable
     // 'PreparedStatement' permite utilizar parámetros (?),
     // los cuales posteriormente serán sustituidos por sus respectivos valores
@@ -18,19 +25,35 @@ public class PersonasJDBC {
     private final String SQL_UPDATE = "UPDATE persona SET nombre = ?, apellido = ? WHERE id_persona = ?";
     private final String SQL_DELETE = "DELETE FROM persona WHERE id_persona = ?";
 
+    // Constructor vacío
+    public PersonasJDBC() {
+    }
+
+    /**
+     * Constructor que asigna una conexión existente para ser utilizada
+     * en los queries de esta clase
+     *
+     * @param conn Conexion a la BD previamente creada
+     */
+    public PersonasJDBC(Connection conn) {
+        this.userConn = conn;
+    }
+
     /**
      * Método que regresa el contenido de la tabla personas (SELECT)
      *
      * @return List<Persona> Almacena resultado SELECT
+     * @throws SQLException Propagamos el error a la clase de prueba
      */
-    public List<Persona> select() {
+    public List<Persona> select() throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         Persona persona = null;
         List<Persona> personasLista = new ArrayList<Persona>();
         try {
-            conn = Conexion.conectarBD();
+            // Reutilizar conexión (se utiliza si existe, en caso contrario se crea)
+            conn = (this.userConn != null) ? this.userConn : Conexion.conectarBD();
             System.out.println("\nEJECUTANDO QUERY: " + SQL_SELECT);
             pstmt = conn.prepareStatement(SQL_SELECT);
             rs = pstmt.executeQuery();
@@ -44,13 +67,18 @@ public class PersonasJDBC {
                 persona.setApellido(apellido);
                 personasLista.add(persona);
             }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            throw new RuntimeException(e);
-        } finally {
+        }
+        // catch (SQLException e) {
+        // System.out.println(e.getMessage());
+        // throw new RuntimeException(e);
+        // }
+        finally {
             Conexion.close(rs);
             Conexion.close(pstmt);
-            Conexion.close(conn);
+            // Sólo cerramos la conexión si fue creada en este método
+            if (this.userConn == null) {
+                Conexion.close(conn);
+            }
         }
         return personasLista;
     }
@@ -61,13 +89,15 @@ public class PersonasJDBC {
      * @param nombre   Nuevo Valor
      * @param apellido Nuevo Valor
      * @return int Número de registros afectados
+     * @throws SQLException Propagamos el error a la clase de prueba
      */
-    public int insert(String nombre, String apellido) {
+    public int insert(String nombre, String apellido) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
         int rows = 0; // registros afectados
         try {
-            conn = Conexion.conectarBD();
+            // Reutilizar conexión (se utiliza si existe, en caso contrario se crea)
+            conn = (this.userConn != null) ? this.userConn : Conexion.conectarBD();
             System.out.println("\nEJECUTANDO QUERY: " + SQL_INSERT);
             pstmt = conn.prepareStatement(SQL_INSERT);
             int index = 1; // contador de parámetros (columnas)
@@ -75,12 +105,17 @@ public class PersonasJDBC {
             pstmt.setString(index, apellido); // parámetro 2 => ?
             rows = pstmt.executeUpdate(); // número de registros afectados
             System.out.println("Registros insertados: " + rows);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            throw new RuntimeException(e);
-        } finally {
+        }
+        // catch (SQLException e) {
+        // System.out.println(e.getMessage());
+        // throw new RuntimeException(e);
+        // }
+        finally {
             Conexion.close(pstmt);
-            Conexion.close(conn);
+            // Sólo cerramos la conexión si fue creada en este método
+            if (this.userConn == null) {
+                Conexion.close(conn);
+            }
         }
         return rows;
     }
@@ -92,13 +127,15 @@ public class PersonasJDBC {
      * @param nombre   Nuevo Valor
      * @param apellido Nuevo Valor
      * @return int Número de registros afectados
+     * @throws SQLException Propagamos el error a la clase de prueba
      */
-    public int update(int id, String nombre, String apellido) {
+    public int update(int id, String nombre, String apellido) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
         int rows = 0;
         try {
-            conn = Conexion.conectarBD();
+            // Reutilizar conexión (se utiliza si existe, en caso contrario se crea)
+            conn = (this.userConn != null) ? this.userConn : Conexion.conectarBD();
             System.out.println("\nEJECUTANDO QUERY: " + SQL_UPDATE);
             pstmt = conn.prepareStatement(SQL_UPDATE);
             int index = 1;
@@ -107,12 +144,17 @@ public class PersonasJDBC {
             pstmt.setInt(index, id); // parámetro 3 => ?
             rows = pstmt.executeUpdate();
             System.out.println("Registros actualizados: " + rows);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            throw new RuntimeException(e);
-        } finally {
+        }
+        // catch (SQLException e) {
+        // System.out.println(e.getMessage());
+        // throw new RuntimeException(e);
+        // }
+        finally {
             Conexion.close(pstmt);
-            Conexion.close(conn);
+            // Sólo cerramos la conexión si fue creada en este método
+            if (this.userConn == null) {
+                Conexion.close(conn);
+            }
         }
         return rows;
     }
@@ -122,24 +164,31 @@ public class PersonasJDBC {
      *
      * @param id Clave primaria
      * @return int Número de registros afectados
+     * @throws SQLException Propagamos el error a la clase de prueba
      */
-    public int delete(int id) {
+    public int delete(int id) throws SQLException {
         Connection conn = null;
         PreparedStatement pstmt = null;
         int rows = 0;
         try {
-            conn = Conexion.conectarBD();
+            // Reutilizar conexión (se utiliza si existe, en caso contrario se crea)
+            conn = (this.userConn != null) ? this.userConn : Conexion.conectarBD();
             System.out.println("\nEJECUTANDO QUERY: " + SQL_DELETE);
             pstmt = conn.prepareStatement(SQL_DELETE);
             pstmt.setInt(1, id);
             rows = pstmt.executeUpdate();
             System.out.println("Registros eliminados: " + rows);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            throw new RuntimeException(e);
-        } finally {
+        }
+        // catch (SQLException e) {
+        // System.out.println(e.getMessage());
+        // throw new RuntimeException(e);
+        // }
+        finally {
             Conexion.close(pstmt);
-            Conexion.close(conn);
+            // Sólo cerramos la conexión si fue creada en este método
+            if (this.userConn == null) {
+                Conexion.close(conn);
+            }
         }
         return rows;
     }
