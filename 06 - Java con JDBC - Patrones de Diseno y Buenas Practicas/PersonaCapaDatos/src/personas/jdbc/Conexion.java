@@ -14,6 +14,8 @@ public class Conexion {
     // El puerto es opcional (omisión SSL da un warning)
     // "jdbc:mariadb://localhost:3306/sga-nono?useSSL=false";
     private static String HOST = "jdbc:mariadb://localhost:3306/";
+    // private static String HOST =
+    // "jdbc:sqlite:D:/01_Archivos_Programas/SQLiteStudio/data/sga-nono.db";
     private static String BD = "sga-nono";
     private static String USER = "root";
     private static String PASSWORD = "";
@@ -25,6 +27,7 @@ public class Conexion {
         Connection conn = null;
         try {
             conn = DriverManager.getConnection(HOST + BD, USER, PASSWORD);
+            // conn = DriverManager.getConnection(HOST);
             System.out.println("OK - Se ha establecido conexión con la BD");
         } catch (SQLException e) {
             System.out.println("ERROR - No se pudo conectar con la BD");
