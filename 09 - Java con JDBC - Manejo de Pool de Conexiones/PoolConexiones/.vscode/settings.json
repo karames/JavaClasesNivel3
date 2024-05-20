@@ -1,0 +1,12 @@
+{
+  "java.project.sourcePaths": ["src"],
+  "java.project.outputPath": "bin",
+  "java.project.referencedLibraries": [
+    "lib/**/*.jar",
+    "d:\\JavaClasesNivel3\\drivers-jdbc\\commons-dbcp2-2.12.0.jar",
+    "d:\\JavaClasesNivel3\\drivers-jdbc\\mariadb-java-client-3.3.3.jar",
+    "d:\\JavaClasesNivel3\\drivers-jdbc\\commons-pool2-2.12.0.jar",
+    "d:\\JavaClasesNivel3\\drivers-jdbc\\commons-logging-1.3.2.jar"
+  ],
+  "cSpell.words": ["Conexion", "jdbc", "mariadb", "pstmt"]
+}
