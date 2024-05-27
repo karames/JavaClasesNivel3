@@ -1,0 +1,17 @@
+{
+  "java.project.sourcePaths": ["src"],
+  "java.project.outputPath": "bin",
+  "java.project.referencedLibraries": [
+    "d:\\JavaClasesNivel3\\drivers-jdbc\\sqlite-jdbc-3.43.0.0.jar"
+  ],
+  "cSpell.words": [
+    "AUTOINCREMENT",
+    "autoincrementable",
+    "categoria",
+    "Conexion",
+    "jdbc",
+    "pstmt",
+    "sqle",
+    "sqlite"
+  ]
+}
