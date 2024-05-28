@@ -1,5 +1,8 @@
 package inventario.jdbc;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -7,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import inventario.dto.ProductoDTO;
 
@@ -20,7 +24,9 @@ public class ProductoDAOImp implements ProductoDAO {
     private Connection userConn;
 
     // Host de conexión
-    private final String HOST = "jdbc:sqlite:D:/01_Archivos_Programas/DB Browser for SQLite/data/inventario.db";
+    // private final String HOST = "jdbc:sqlite:D:/01_Archivos_Programas/DB Browser
+    // for SQLite/data/inventario.db";
+    private String host = null;
 
     // Declaraciones SQL
     private final String SQL_CREATE_TABLE_PRODUCTOS = "CREATE TABLE IF NOT EXISTS productos (id INTEGER, nombre TEXT, categoria TEXT, precio REAL, cantidad INTEGER, PRIMARY KEY(id AUTOINCREMENT))";
@@ -39,15 +45,28 @@ public class ProductoDAOImp implements ProductoDAO {
      * Para evitar problemas de conexión de forma concurrente (synchronized)
      */
     @Override
-    public synchronized void ConectarBaseDatos() throws SQLException {
+    public synchronized void ConectarBaseDatos() throws IOException, SQLException {
         System.out.println("");
         System.out.println("CONECTANDO CON LA BD...");
         Connection conn = null;
+        Properties propiedades = new Properties();
+
+        try {
+            InputStream archivo = new FileInputStream(
+                    "D:\\JavaClasesNivel3\\80 - DAM EXAMEN PROGRAMACION - MODELO A\\ModeloA\\src\\inventario\\resources\\conexionBD.properties");
+            propiedades.load(archivo);
+            this.host = propiedades.getProperty("conexion.host");
+        } catch (IOException ioe) {
+            System.out.println("ERROR - NO se ha encontrado el archivo de propiedades");
+            System.out.println(ioe.getMessage());
+            throw new RuntimeException(ioe);
+        }
+
         try {
             if (this.userConn != null) {
                 conn = this.userConn;
             } else {
-                conn = DriverManager.getConnection(HOST);
+                conn = DriverManager.getConnection(this.host);
                 this.userConn = conn;
             }
             System.out.println("OK - Se ha establecido conexión con la BD");
@@ -71,7 +90,7 @@ public class ProductoDAOImp implements ProductoDAO {
             if (this.userConn != null) {
                 conn = this.userConn;
             } else {
-                conn = DriverManager.getConnection(HOST);
+                conn = DriverManager.getConnection(this.host);
                 this.userConn = conn;
             }
             ps = this.userConn.prepareStatement(SQL_CREATE_TABLE_PRODUCTOS);
@@ -104,7 +123,7 @@ public class ProductoDAOImp implements ProductoDAO {
             if (this.userConn != null) {
                 conn = this.userConn;
             } else {
-                conn = DriverManager.getConnection(HOST);
+                conn = DriverManager.getConnection(this.host);
                 this.userConn = conn;
             }
             System.out.println("\nEJECUTANDO QUERY: " + SQL_INSERT_LOTE);
@@ -137,7 +156,7 @@ public class ProductoDAOImp implements ProductoDAO {
             if (this.userConn != null) {
                 conn = this.userConn;
             } else {
-                conn = DriverManager.getConnection(HOST);
+                conn = DriverManager.getConnection(this.host);
                 this.userConn = conn;
             }
             System.out.println("\nEJECUTANDO QUERY: " + SQL_INSERT);
@@ -176,7 +195,7 @@ public class ProductoDAOImp implements ProductoDAO {
             if (this.userConn != null) {
                 conn = this.userConn;
             } else {
-                conn = DriverManager.getConnection(HOST);
+                conn = DriverManager.getConnection(this.host);
                 this.userConn = conn;
             }
             System.out.println("\nEJECUTANDO QUERY: " + SQL_SELECT);
@@ -224,7 +243,7 @@ public class ProductoDAOImp implements ProductoDAO {
             if (this.userConn != null) {
                 conn = this.userConn;
             } else {
-                conn = DriverManager.getConnection(HOST);
+                conn = DriverManager.getConnection(this.host);
                 this.userConn = conn;
             }
             System.out.println("\nEJECUTANDO QUERY: " + SQL_UPDATE);
@@ -262,7 +281,7 @@ public class ProductoDAOImp implements ProductoDAO {
             if (this.userConn != null) {
                 conn = this.userConn;
             } else {
-                conn = DriverManager.getConnection(HOST);
+                conn = DriverManager.getConnection(this.host);
                 this.userConn = conn;
             }
             System.out.println("\nEJECUTANDO QUERY: " + SQL_DELETE);

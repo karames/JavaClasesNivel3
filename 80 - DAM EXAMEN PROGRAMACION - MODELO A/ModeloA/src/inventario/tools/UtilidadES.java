@@ -9,12 +9,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import java.util.List;
+import java.util.Properties;
 import java.util.ArrayList;
 import java.io.Writer;
 import java.io.FileWriter;
 import java.io.Reader;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -22,7 +25,8 @@ import java.lang.reflect.Type;
 
 public class UtilidadES {
     // Host de conexión
-    private static final String HOST = "jdbc:sqlite:D:/01_Archivos_Programas/DB Browser for SQLite/data/inventario.db";
+    // private static final String HOST = "jdbc:sqlite:D:/01_Archivos_Programas/DB
+    // Browser for SQLite/data/inventario.db";
 
     // Declaraciones SQL
     private static final String SQL_SELECT = "SELECT id, nombre, categoria, precio, cantidad FROM productos ORDER BY id";
@@ -39,8 +43,22 @@ public class UtilidadES {
         ResultSet rs = null;
         ProductoDTO producto = null;
         List<ProductoDTO> productoLista = new ArrayList<ProductoDTO>();
+        Properties propiedades = new Properties();
+        String host = null;
+
         try {
-            conn = DriverManager.getConnection(HOST);
+            InputStream archivo = new FileInputStream(
+                    "D:\\JavaClasesNivel3\\80 - DAM EXAMEN PROGRAMACION - MODELO A\\ModeloA\\src\\inventario\\resources\\conexionBD.properties");
+            propiedades.load(archivo);
+            host = propiedades.getProperty("conexion.host");
+        } catch (IOException ioe) {
+            System.out.println("ERROR - NO se ha encontrado el archivo de propiedades");
+            System.out.println(ioe.getMessage());
+            throw new RuntimeException(ioe);
+        }
+
+        try {
+            conn = DriverManager.getConnection(host);
             System.out.println("\nEJECUTANDO QUERY: " + SQL_SELECT);
             ps = conn.prepareStatement(SQL_SELECT);
             rs = ps.executeQuery();
@@ -93,6 +111,9 @@ public class UtilidadES {
     public static void importarJSON() throws IOException, SQLException {
         System.out.println("");
         System.out.println("IMPORTANDO TABLA PERSONAS CON FORMATO JSON'...");
+        Properties propiedades = new Properties();
+        String host = null;
+
         try (Reader reader = new FileReader("productos.json")) {
             Connection conn = null;
             PreparedStatement ps = null;
@@ -101,8 +122,20 @@ public class UtilidadES {
             Type productoListaTipo = new TypeToken<ArrayList<ProductoDTO>>() {
             }.getType();
             ArrayList<ProductoDTO> productoLista = gson.fromJson(reader, productoListaTipo);
+
             try {
-                conn = DriverManager.getConnection(HOST);
+                InputStream archivo = new FileInputStream(
+                        "D:\\JavaClasesNivel3\\80 - DAM EXAMEN PROGRAMACION - MODELO A\\ModeloA\\src\\inventario\\resources\\conexionBD.properties");
+                propiedades.load(archivo);
+                host = propiedades.getProperty("conexion.host");
+            } catch (IOException ioe) {
+                System.out.println("ERROR - NO se ha encontrado el archivo de propiedades");
+                System.out.println(ioe.getMessage());
+                throw new RuntimeException(ioe);
+            }
+
+            try {
+                conn = DriverManager.getConnection(host);
                 System.out.println("\nEJECUTANDO QUERY: " + SQL_INSERT_JSON);
                 ps = conn.prepareStatement(SQL_INSERT_JSON);
                 for (ProductoDTO producto : productoLista) {

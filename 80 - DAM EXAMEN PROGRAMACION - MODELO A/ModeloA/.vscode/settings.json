@@ -10,11 +10,13 @@
     "AUTOINCREMENT",
     "autoincrementable",
     "categoria",
+    "conexion",
     "Conexion",
     "gson",
     "Gson",
     "jdbc",
     "productoslista",
+    "PROGRAMACION",
     "pstmt",
     "sqle",
     "sqlite"

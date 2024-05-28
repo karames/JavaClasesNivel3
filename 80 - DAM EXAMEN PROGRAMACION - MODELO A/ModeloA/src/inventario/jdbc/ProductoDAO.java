@@ -1,5 +1,6 @@
 package inventario.jdbc;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -10,7 +11,7 @@ import inventario.dto.ProductoDTO;
  */
 public interface ProductoDAO {
 
-    public abstract void ConectarBaseDatos() throws SQLException;
+    public abstract void ConectarBaseDatos() throws IOException, SQLException;
 
     public abstract void CrearTabla() throws SQLException;
 

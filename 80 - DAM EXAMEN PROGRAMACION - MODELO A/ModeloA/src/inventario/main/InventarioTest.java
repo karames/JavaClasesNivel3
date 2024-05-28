@@ -16,7 +16,7 @@ public class InventarioTest {
         productoDao.ConectarBaseDatos();
 
         // Crear tabla productos
-        productoDao.CrearTabla();
+        // productoDao.CrearTabla();
 
         // Insertar lote de registros
         // productoDao.insertarLote();
