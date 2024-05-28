@@ -1,9 +1,7 @@
-package inventario.jdbc;
+package inventario.dto;
 
 /**
  * Clase patrón de diseño DTO (Data Transfer Object)
- *
- * @author Nono
  */
 public class ProductoDTO {
 

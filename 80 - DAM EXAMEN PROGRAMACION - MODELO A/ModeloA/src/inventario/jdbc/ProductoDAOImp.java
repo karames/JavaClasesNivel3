@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import inventario.dto.ProductoDTO;
+
 /**
  * CRUD consultas con JDBC - SQLite
  *
@@ -16,6 +18,8 @@ import java.util.List;
 public class ProductoDAOImp implements ProductoDAO {
     // Variable que almacena una conexión como referencia
     private Connection userConn;
+
+    // Host de conexión
     private final String HOST = "jdbc:sqlite:D:/01_Archivos_Programas/DB Browser for SQLite/data/inventario.db";
 
     // Declaraciones SQL
@@ -35,9 +39,9 @@ public class ProductoDAOImp implements ProductoDAO {
      * Para evitar problemas de conexión de forma concurrente (synchronized)
      */
     @Override
-    public synchronized void ConectarCrearBaseDatos() throws SQLException {
+    public synchronized void ConectarBaseDatos() throws SQLException {
         System.out.println("");
-        System.out.println("CREANDO/CONECTANDO CON LA BD...");
+        System.out.println("CONECTANDO CON LA BD...");
         Connection conn = null;
         try {
             if (this.userConn != null) {
@@ -48,7 +52,7 @@ public class ProductoDAOImp implements ProductoDAO {
             }
             System.out.println("OK - Se ha establecido conexión con la BD");
         } catch (SQLException sqle) {
-            System.out.println("ERROR - No se pudo conectar con la BD");
+            System.out.println("ERROR - NO se ha establecido conexión con la BD");
             System.out.println(sqle.getMessage());
             throw new RuntimeException(sqle);
         }
@@ -72,8 +76,9 @@ public class ProductoDAOImp implements ProductoDAO {
             }
             ps = this.userConn.prepareStatement(SQL_CREATE_TABLE_PRODUCTOS);
             ps.executeUpdate();
+            System.out.println("OK - La tabla 'personas' ya existía o ha sido creada");
         } catch (SQLException sqle) {
-            System.out.println("ERROR - No se pudo crear la tabla productos");
+            System.out.println("ERROR - La tabla 'personas' NO existía y no ha sido creada");
             System.out.println(sqle.getMessage());
             throw new RuntimeException(sqle);
         } finally {
@@ -166,7 +171,7 @@ public class ProductoDAOImp implements ProductoDAO {
         PreparedStatement ps = null;
         ResultSet rs = null;
         ProductoDTO producto = null;
-        List<ProductoDTO> productosLista = new ArrayList<ProductoDTO>();
+        List<ProductoDTO> productoLista = new ArrayList<ProductoDTO>();
         try {
             if (this.userConn != null) {
                 conn = this.userConn;
@@ -189,7 +194,7 @@ public class ProductoDAOImp implements ProductoDAO {
                 producto.setCategoria(categoria);
                 producto.setPrecio(precio);
                 producto.setCantidad(cantidad);
-                productosLista.add(producto);
+                productoLista.add(producto);
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -202,7 +207,7 @@ public class ProductoDAOImp implements ProductoDAO {
                 rs.close();
             }
         }
-        return productosLista;
+        return productoLista;
     }
 
     /**

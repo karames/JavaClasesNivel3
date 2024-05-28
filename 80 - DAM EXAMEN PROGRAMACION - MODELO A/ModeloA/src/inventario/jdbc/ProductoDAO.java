@@ -3,14 +3,14 @@ package inventario.jdbc;
 import java.sql.SQLException;
 import java.util.List;
 
+import inventario.dto.ProductoDTO;
+
 /**
  * Patrón de diseño DAO (Data Access Object)
- *
- * @author Nono
  */
 public interface ProductoDAO {
 
-    public abstract void ConectarCrearBaseDatos() throws SQLException;
+    public abstract void ConectarBaseDatos() throws SQLException;
 
     public abstract void CrearTabla() throws SQLException;
 
